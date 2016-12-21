@@ -1,0 +1,53 @@
+div img{
+	margin-bottom: -15px;
+}
+
+div b {
+	font-size: 20px;
+	font-family: "Papyrus";
+}
+
+.question {
+	font-style: bold;
+	font-size: 20px;
+	padding-bottom: 50px;
+	width: 500px;
+}
+
+.choice {
+
+}
+.radio {
+/*	display:none;*/
+}
+.group {
+
+
+
+	padding-bottom: 350px;
+
+}
+
+.img {
+	border: 1px solid black;
+	width: 200px;
+	height: 200px;
+
+
+}
+
+.product {
+	float: left;
+	padding-left: 50px;
+	width: 200px;
+	height: 200px;
+}
+
+a {
+	color: black;
+
+}
+
+.products {
+		padding-top: 50px;
+}

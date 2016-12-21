@@ -1,0 +1,74 @@
+{% load staticfiles %}
+
+<html>
+	<head>
+        <link rel="stylesheet" href="{%static 'main/main.css' %}" type='text/css'>
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script> 
+
+	</head>
+	<body>
+		<div>
+			<a href="{% url 'main:index' %}">
+			<img src="{%static "main/logo.png" %}" alt = "Logo" width = "100" height="100">  
+			</a>
+			<b>Schenken ist schön</b>
+			<hr>
+		</div>
+
+{% block index %}
+{% endblock %}
+
+{% block results %}
+{% endblock %}
+
+
+<script>$(document).on("click", "input", function () {
+    	if ($(this).attr('type') == 'radio'){
+    		var val_chosen = $(this).val();
+	    	var att_type = $(this).attr('name');
+	    }
+	    else {
+	    console.log("button");
+	    var val_chosen;
+	    var att_type;
+	    }
+	    	$.ajax({
+		      	url: "{% url 'main:next_question' %}",
+		      	data: {'val_chosen':val_chosen,
+		      		   'att_type':att_type,
+		      		   'input_type':$(this).attr('type')},
+		      	datatype : 'json',
+		      	success: function (data) {
+      				if (data.last == 0) {
+      					$('#question').empty();
+      					$('input[value="Zurück"]').remove();
+      					$('#question').append(data.question_text);
+      					var i = 0
+      					data.attribute_names.forEach(function(element){
+      						i++
+      						$('#question').append("<div class='choice'><input type='radio' name=" + data.attribute_type_name +  " id=" + data.attribute_type_name+i +  " value=" + element.attribute_name+ " /><label>" + element.attribute_name + "</label></div>");
+      				     		})
+      				if (data.back == 1){
+      				$('form').after("<input type='submit' value='Zurück'>");}
+ 
+      		}
+      		
+      		else {
+      			console.log("TRIGGER SUBMIT");
+      			document.getElementById('questions').submit();
+      		}
+      	
+      	console.log("Success");
+      	}
+
+
+
+    	});
+    	
+      
+
+      });
+ </script>
+
+	</body>
+</html>

@@ -1,0 +1,30 @@
+
+{% extends 'main/header.html' %}
+
+{% block index %}
+<h1>What's the gift?</h1>
+<br>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+
+<form action = "{%url 'main:results' %}" method = "POST" id ="questions">
+
+{% csrf_token %}
+
+
+	<div id="question"> 
+	{{ question.question_text}} 
+	{% for a in question.attribute_set.all %}
+		<div class="choice">
+		<input type="radio" name = "{{ question.attribute_type_name }}" id="{{ question.attribute_type_name }}{{forloop.counter}}" value = "{{ a.attribute_name }}" {% if forloop.counter == 1 %} checked=""{% endif %} />
+		<label for = "{{forloop.counter}}">{{a.attribute_name}}</label>
+		</div>
+	{% endfor %}
+	</div>
+
+
+
+</form>
+
+{% endblock %}

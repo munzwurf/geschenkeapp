@@ -1,0 +1,24 @@
+{% extends 'main/header.html' %}
+
+{% block results %}
+	<div class="products">
+	<div class="group">
+{% for gift in best_gifts %}
+
+
+
+	<div class="product">
+	<div class="img">
+		<a href="{{ gift.url }}"><img src="{{gift.img_url}}"></a>
+	</div>
+	<br>
+	<a href="{{ gift.url }}">{{ gift.name }}</a>
+
+	</div>
+	{% if forloop.counter|divisibleby:3 and not forloop.last %}
+		</div>
+		<div class="group">
+	{% endif %}
+{% endfor %}
+</div>
+{% endblock %}
