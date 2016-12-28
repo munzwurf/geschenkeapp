@@ -25,7 +25,8 @@ SECRET_KEY = '(2q=_iiev1)hfjs$15esr*p%clfre40rp1=$z=d2&+l4t9_^9e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.0',
+				'munzwurf.pythonanywhere.com']
 
 
 # Application definition
