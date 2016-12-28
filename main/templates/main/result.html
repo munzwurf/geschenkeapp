@@ -1,24 +1,26 @@
 {% extends 'main/header.html' %}
 
 {% block results %}
-	<div class="products">
-	<div class="group">
+	<div class="row">
 {% for gift in best_gifts %}
 
 
 
-	<div class="product">
-	<div class="img">
+	<div class="column column-4">
 		<a href="{{ gift.url }}"><img src="{{gift.img_url}}"></a>
-	</div>
-	<br>
-	<a href="{{ gift.url }}">{{ gift.name }}</a>
-
-	</div>
-	{% if forloop.counter|divisibleby:3 and not forloop.last %}
+		<br>
+		<div class="text dot-ellipsis">
+			<a href="{{ gift.url }}" title="{{gift.name}}">{{ gift.name }}</a>
 		</div>
-		<div class="group">
+		<div class="price">
+			{{gift.price}} €
+		</div>
+	</div>
+
+	{% if forloop.counter|divisibleby:3 and not forloop.last %}
+		</div><div class="row">
 	{% endif %}
+
 {% endfor %}
 </div>
 {% endblock %}

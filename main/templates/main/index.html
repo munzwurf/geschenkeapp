@@ -2,29 +2,132 @@
 {% extends 'main/header.html' %}
 
 {% block index %}
-<h1>What's the gift?</h1>
+<h1>Hier finden Sie das perfekte Geschenke für Ihre Lieben</h1>
 <br>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-
-<form action = "{%url 'main:results' %}" method = "POST" id ="questions">
-
-{% csrf_token %}
-
-
+	
+	<div id="choice">
 	<div id="question"> 
 	{{ question.question_text}} 
-	{% for a in question.attribute_set.all %}
-		<div class="choice">
-		<input type="radio" name = "{{ question.attribute_type_name }}" id="{{ question.attribute_type_name }}{{forloop.counter}}" value = "{{ a.attribute_name }}" {% if forloop.counter == 1 %} checked=""{% endif %} />
-		<label for = "{{forloop.counter}}">{{a.attribute_name}}</label>
-		</div>
-	{% endfor %}
+	</div>
+	<div id = "attributes">
+		<div class="row">
+		{% for a in question.attribute_set.all %}
+			<div class="column column-6 button {{question.attribute_type_name}}">{{a.attribute_name}}</div>
+		{% endfor %}
+	</div>
+	</div>
+	<div class="navigation row">
+	<div class=" empty back column column-4">
+	< Zurück
 	</div>
 
+	<div class="empty reset column column-4">Auswahl zurücksetzen</div>
+	<div class="forward column column-4">Weiter >
+	</div>
+	</div>
+
+{% endblock %}
 
 
-</form>
+
+
+
+{% block javascript %}
+
+<script>
+
+var choice = []
+var select = {{question.select}}
+
+$(document).on("click", ".button", function () {
+	$(".reset").removeClass("empty")
+	if (select == 1 ) {
+		choice = []
+		$(".button").css("background-color", "white")}
+	if ( choice.length < select) {
+		choice.push($(this)) 
+		$(".navigation div").css("cursor", "pointer")
+		$(this).css("background-color", "#F4A460")}
+	});
+
+
+$(document).on("click", ".reset", function () {
+	$(".button").css("background-color", "white")
+	$(".navigation div").css("cursor", "default")
+	choice = []
+	$(this).addClass("empty")	
+});
+
+$(document).on("click", ".back, .forward", function () {
+	var val_chosen
+	var att_type
+	var input_type
+
+    	if ( $(this).hasClass("forward") ) {
+    		if ( choice.length == 0) {return}
+    		val_chosen = []
+    		for (i = 0; i < choice.length; i++) {
+    			val_chosen.push(choice[i].text())
+    		}
+    		val_chosen = JSON.stringify(val_chosen);
+	    	att_type = choice[0].attr('class').split(' ').pop();;
+	    	input_type = "choice";	    
+	    }
+
+	    	$.ajax({
+		      	url: "{% url 'main:next_question' %}",
+		      	data: {'val_chosen':val_chosen,
+		      		   'att_type':att_type,
+		      		   'input_type':input_type},
+		      	datatype : 'json',
+		      	success: function (data) {
+		      		choice = [];
+		      		select = data.select;
+      				if (data.question_text) {
+      					$('#question').empty();
+      					$('#attributes').empty();
+   						$('#choice input').remove();
+   						$(".forward").css("cursor", "default")
+      					$('#question').append(data.question_text);
+      					$('.reset').addClass("empty")
+      					var i = 0
+      					var html = ""
+      					html += "<div class='row'>"
+      					var col = ""
+      					data.attribute_names.length < 3 ? col = "column-6" : col = "column-4"
+      					data.attribute_names.forEach(function(element){
+      						i++;
+      						html += "<div class= 'column button " + col + " " + data.attribute_type_name + "' >" + element.attribute_name + " </div>"
+   							i % 3 == 0 ? html += "</div><div class='row'>" : ""
+      						
+      					});
+      					html += "</div>"
+
+      					$('#attributes').append(html);
+
+
+      					if (data.back == 1){
+      						$(".back").removeClass("empty")
+      					}
+      					else {
+      						$(".back").addClass("empty")
+      					}
+	 				}
+      		
+      				else {
+      					window.location = data.result;
+      			
+    		  		}
+      			}
+
+
+
+    		});
+	    });
+
+ </script>
 
 {% endblock %}

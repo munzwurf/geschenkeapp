@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.http import Http404, JsonResponse
@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.views import generic
 from main.models import Attribute, AttributeType, Gifts
 import operator
+import json
 
 
 
@@ -20,21 +21,22 @@ question_list = []
 answered_questions = []
 
 def index(request):
-	global question_list, answered_questions
+	global question_list, answered_questions, submitted_attributes
 	question_list = list(questions)
 	answered_questions = []
-
+	submitted_attributes = {}
+	print submitted_attributes
 	question = question_list[0]
 	answered_questions.append(question_list[0])
 	question_list.pop(0)
 	return render (request, 'main/index.html', {'question' : question},)
 
 def results(request):
+	
 	try:
-		
-#		best_gifts = find_best_gifts(request.POST,3)
+		print submitted_attributes
+
 		best_gifts = find_best_gifts(submitted_attributes,3)
-		#print best_gifts
 		return render (request, 'main/result.html', {'best_gifts':best_gifts})
 	except (KeyError):
 		return render (request, 'main/index.html', {'questions' : questions, 
@@ -62,40 +64,42 @@ def find_best_gifts(attr,lim):
 	return list(gifts)
 
 def next_question(request):
-	global question_list, answered_questions
+	global question_list, answered_questions, submitted_attributes
 	back = 1
-	last = 0
+
 	attribute = request.GET.get('val_chosen', None)
+	if attribute:
+		attribute = json.loads(attribute)
 	attribute_type = request.GET.get('att_type', None)
 	input_type = request.GET.get('input_type', None)
-	print question_list
-	if question_list == []:
-		last = 1
-		data = {'last':last,'back':back}
 
-	else:
-		if input_type == "radio":
-			submitted_attributes[attribute_type] = attribute
+	
+	if input_type == "choice":
+		submitted_attributes[attribute_type] = attribute
+		if question_list == []:
+			result = reverse('main:results')
+			data = {'result':result}
+			return JsonResponse(data)
+		else:
 			question = question_list[0]
 			answered_questions.append(question_list[0])
 			question_list.pop(0)
 			attribute_names = question.attribute_set.all().values('attribute_name')
-		else:
-			question = answered_questions[-2]
-			question_list.insert(0,answered_questions[-1])
-			answered_questions.pop()
-			attribute_names = question.attribute_set.all().values('attribute_name')
+	else:
+		question = answered_questions[-2]
+		question_list.insert(0,answered_questions[-1])
+		answered_questions.pop()
+		attribute_names = question.attribute_set.all().values('attribute_name')
 
-		if len(answered_questions) in [0,1]:
-			back = 0
+	if len(answered_questions) in [0,1]:
+		back = 0
 	
 
-		data = {
-		'question_text':question.question_text,
-		'attribute_type_name':question.attribute_type_name,
-		'attribute_names':list(attribute_names),
-		'last':last,
-		'back':back
-		}
-	#print submitted_attributes
+	data = {
+	'question_text':question.question_text,
+	'attribute_type_name':question.attribute_type_name,
+	'attribute_names':list(attribute_names),
+	'back':back,
+	'select':question.select}
+	print submitted_attributes
 	return	JsonResponse(data)

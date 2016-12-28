@@ -1,0 +1,7 @@
+a_id,attribute_type,question,select,attributes,conditions
+1,gender,Ist das Geschenk für einen Mann oder eine Frau?,1,Mann;Frau,Weihnachten – Ab 1.11. bis 31.12.
+2,relationship,Für wen ist das Geschenk?,1,Eltern;Partner;Kollege;Freund;Kind;Geschwister,Hochzeitstag – Wenn relationship “Partner”
+3,age,Wie alt ist der zu Beschenkende?,1,Unter 6 Jahren;6 bis 12 Jahre;13 bis 17 Jahre;18 bis 29 Jahre;30 bis 49 Jahre;49 Jahre oder älter,Muttertag – Wenn relationship “Eltern”
+4,occasion,Für welchen Anlass gilt das Geschenk?,1,Geburtstag;Weihnachten;Hochzeit;Hochzeitstag;Muttertag;Vaterag;Valentinstag;Ostern;Einzug;Taufe;Geburt;Einfach so;Abschied;Junggesellenenabschied,Vatertag – Wenn relationship “Eltern”
+5,price,In welcher Preisspanne soll sich das Geschenk bewegen?,1,Unter 10€;10€ bis 24€;25 bis 49€;50€ bis 100€;ab 100€,Valentingstag – Wenn relationship “Partner” und ab 01.01. bis 16.2.
+6,interests,Für was interessiert sich diese Person?,3,Ausgefallenes & Witziges;Haus & Wohnen;Essen & Trinken;Beauty & Wellness;Erlebnisse & Reisen;Gadgets & Technik;Schmuck & Accessoires;Outdoor & Freizeit;Bücher;Mode;Party,

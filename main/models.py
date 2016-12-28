@@ -7,6 +7,7 @@ import datetime
 class AttributeType(models.Model):
 	attribute_type_name = models.CharField(max_length = 999)
 	question_text = models.CharField(max_length = 999)
+	select = models.IntegerField(default = 1)
         
 	def __str__(self):
 		return self.attribute_type_name
